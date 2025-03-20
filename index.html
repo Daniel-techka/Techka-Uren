@@ -658,8 +658,9 @@
             `;
 
             // Adatok elküldése az EmailJS-nek
-            emailjs.send("0Z28VUG1kiXOga13U", "template_aakpzgt", {
+            emailjs.send("service_ylflcne", "template_aakpzgt", {
                 worker_name: data.worker_name,
+                submission_date: data.submission_date,
                 form_html: emailHtml
             })
                 .then(() => alert("Verzonden naar Techka! \nSent to Techka!"))
