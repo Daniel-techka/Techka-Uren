@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Techka Urenregistratie</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #D6EAF8;
+            color: #333;
+        }
+        .container {
+            max-width: 1200px;
+            min-height: 100vh;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #FFFFFF, #F0F4F8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+            overflow-x: auto;
+            animation: fadeIn 0.5s ease;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .logo {
+            display: block;
+            max-width: 300px;
+            margin: 0 auto 20px;
+            background-color: #FFFFFF;
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #1E90FF;
+            margin-top: 0;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .info-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 20px;
+        }
+        .employee-info, .company-info {
+            flex: 1;
+            padding: 15px;
+            border: 1px solid #E0E0E0;
+            border-radius: 10px;
+            background-color: #F9F9F9;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .employee-info label, .company-info label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 500;
+            color: #555;
+        }
+        .employee-info input, .company-info input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            border: 1px solid #E0E0E0;
+            border-radius: 5px;
+            background-color: #FFFFFF;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        th, td {
+            padding: 6px;
+            border: 1px solid #E0E0E0;
+            text-align: center;
+            color: #333;
+            white-space: nowrap;
+            font-size: 0.9em;
+        }
+        th {
+            background-color: #E3F2FD;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        tr:nth-child(even) {
+            background-color: #F9F9F9;
+        }
+        input[type="date"], input[type="time"], input[type="number"], input[type="text"] {
+            width: 100%;
+            min-width: 60px;
+            height: 40px;
+            padding: 3px;
+            box-sizing: border-box;
+            border: 1px solid #E0E0E0;
+            border-radius: 5px;
+            background-color: #FFFFFF;
+            color: #333;
+            font-size: 0.9em;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator,
+        input[type="time"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5);
+        }
+        .signature {
+            margin: 30px 0;
+        }
+        canvas {
+            border: 1px solid #E0E0E0;
+            width: 100%;
+            height: 150px;
+            max-width: 400px;
+            display: block;
+            margin: 10px 0;
+            background-color: #F9F9F9;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #1E90FF;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #104E8B;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+        .totals {
+            margin: 30px 0;
+            font-weight: 500;
+            color: #333;
+            background-color: #E3F2FD;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .english {
+            font-size: 0.9em;
+            color: #777;
+            display: block;
+            margin-top: 2px;
+        }
+        @media (max-width: 800px) {
+            .info-container {
+                flex-direction: column;
+            }
+            .employee-info, .company-info {
+                width: 100%;
+            }
+            .logo {
+                max-width: 250px;
+            }
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+            th, td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+                font-size: 0.8em;
+                text-align: left;
+                padding: 5px;
+            }
+            th {
+                background-color: #E3F2FD;
+                position: sticky;
+                top: 0;
+                z-index: 1;
+            }
+            input[type="date"], input[type="time"], input[type="number"], input[type="text"] {
+                min-width: 50px;
+                height: 40px;
+                font-size: 0.85em;
+            }
+            canvas {
+                max-width: 100%;
+            }
+            button {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <img src="Techka-logo.png" alt="Techka Logo" class="logo">
+        <h1>Techka Urenregistratie <br><span class="english">Techka Timesheet</span></h1>
+
+        <form id="urenForm">
+            <!-- Dolgozó és cég adatai egymás mellett -->
+            <div class="info-container">
+                <!-- Dolgozó adatai -->
+                <div class="employee-info">
+                    <label>Naam <span class="english">Name</span></label>
+                    <input type="text" name="worker_name" value="Jan de Vries" readonly>
+
+                    <label>Geboortedatum <span class="english">Date of Birth</span></label>
+                    <input type="date" name="worker_dob" value="1985-03-15" readonly>
+
+                    <label>BSN-nummer <span class="english">BSN Number</span></label>
+                    <input type="text" name="worker_bsn" value="123456789" readonly>
+                </div>
+
+                <!-- Cég adatai -->
+                <div class="company-info">
+                    <label>Bedrijfsnaam <span class="english">Company Name</span></label>
+                    <input type="text" name="company_name" value="Techka BV" readonly>
+
+                    <label>Adres <span class="english">Address</span></label>
+                    <input type="text" name="company_address" value="Hoofdstraat 123, 1012 AB Amsterdam" readonly>
+
+                    <label>Contactpersoon <span class="english">Contact Person</span></label>
+                    <input type="text" name="company_contact" value="Piet Jansen" readonly>
+
+                    <label>Telefoonnummer <span class="english">Phone Number</span></label>
+                    <input type="text" name="company_phone" value="+31 20 123 4567" readonly>
+                </div>
+            </div>
+
+            <!-- Űrlap tartalma -->
+            <div class="form-content">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Dag <br><span class="english">Day</span></th>
+                            <th>Datum <br><span class="english">Date</span></th>
+                            <th>Norm. uren <br><span class="english">Normal hours</span></th>
+                            <th>Ploeg. uren <br><span class="english">Team hours</span></th>
+                            <th>Begintijd <br><span class="english">Start time</span></th>
+                            <th>Eindtijd <br><span class="english">End time</span></th>
+                            <th>Overuren <br><span class="english">Overtime</span></th>
+                            <th>Ziekte <br><span class="english">Sick</span></th>
+                            <th>Vakantie <br><span class="english">Vacation</span></th>
+                            <th>Feestdagen <br><span class="english">Holidays</span></th>
+                            <th>Km <br><span class="english">Km</span></th>
+                            <th>Proj. nr. <br><span class="english">Project number</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Maandag <br><span class="english">Monday</span></td>
+                            <td><input type="date" name="datum1"></td>
+                            <td><input type="number" name="normal_uren1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start1" onchange="calculateHours(1)"></td>
+                            <td><input type="time" name="eind1" onchange="calculateHours(1)"></td>
+                            <td><input type="number" name="overuren1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km1" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer1"></td>
+                        </tr>
+                        <tr>
+                            <td>Dinsdag <br><span class="english">Tuesday</span></td>
+                            <td><input type="date" name="datum2"></td>
+                            <td><input type="number" name="normal_uren2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start2" onchange="calculateHours(2)"></td>
+                            <td><input type="time" name="eind2" onchange="calculateHours(2)"></td>
+                            <td><input type="number" name="overuren2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km2" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer2"></td>
+                        </tr>
+                        <tr>
+                            <td>Woensdag <br><span class="english">Wednesday</span></td>
+                            <td><input type="date" name="datum3"></td>
+                            <td><input type="number" name="normal_uren3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start3" onchange="calculateHours(3)"></td>
+                            <td><input type="time" name="eind3" onchange="calculateHours(3)"></td>
+                            <td><input type="number" name="overuren3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km3" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer3"></td>
+                        </tr>
+                        <tr>
+                            <td>Donderdag <br><span class="english">Thursday</span></td>
+                            <td><input type="date" name="datum4"></td>
+                            <td><input type="number" name="normal_uren4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start4" onchange="calculateHours(4)"></td>
+                            <td><input type="time" name="eind4" onchange="calculateHours(4)"></td>
+                            <td><input type="number" name="overuren4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km4" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer4"></td>
+                        </tr>
+                        <tr>
+                            <td>Vrijdag <br><span class="english">Friday</span></td>
+                            <td><input type="date" name="datum5"></td>
+                            <td><input type="number" name="normal_uren5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start5" onchange="calculateHours(5)"></td>
+                            <td><input type="time" name="eind5" onchange="calculateHours(5)"></td>
+                            <td><input type="number" name="overuren5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km5" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer5"></td>
+                        </tr>
+                        <tr>
+                            <td>Zaterdag <br><span class="english">Saturday</span></td>
+                            <td><input type="date" name="datum6"></td>
+                            <td><input type="number" name="normal_uren6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start6" onchange="calculateHours(6)"></td>
+                            <td><input type="time" name="eind6" onchange="calculateHours(6)"></td>
+                            <td><input type="number" name="overuren6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km6" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer6"></td>
+                        </tr>
+                        <tr>
+                            <td>Zondag <br><span class="english">Sunday</span></td>
+                            <td><input type="date" name="datum7"></td>
+                            <td><input type="number" name="normal_uren7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ploegen_uren7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="time" name="start7" onchange="calculateHours(7)"></td>
+                            <td><input type="time" name="eind7" onchange="calculateHours(7)"></td>
+                            <td><input type="number" name="overuren7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="ziekte7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="vakantie7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="feestdagen7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="number" name="km7" step="0.1" onchange="calculateTotals()"></td>
+                            <td><input type="text" name="projectnummer7"></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="totals">
+                    Totaal norm. uren: <span id="totalNormalHours">0</span> <br><span class="english">Total normal hours: <span id="totalNormalHoursEnglish">0</span></span><br>
+                    Totaal ploeg. uren: <span id="totalPloegenHours">0</span> <br><span class="english">Total team hours: <span id="totalPloegenHoursEnglish">0</span></span><br>
+                    Totaal overuren: <span id="totalOveruren">0</span> <br><span class="english">Total overtime: <span id="totalOverurenEnglish">0</span></span><br>
+                    Totaal ziekte: <span id="totalZiekte">0</span> <br><span class="english">Total sick: <span id="totalZiekteEnglish">0</span></span><br>
+                    Totaal vakantie: <span id="totalVakantie">0</span> <br><span class="english">Total vacation: <span id="totalVakantieEnglish">0</span></span><br>
+                    Totaal feestdagen: <span id="totalFeestdagen">0</span> <br><span class="english">Total holidays: <span id="totalFeestdagenEnglish">0</span></span><br>
+                    Totaal km: <span id="totalKm">0</span> <br><span class="english">Total km: <span id="totalKmEnglish">0</span></span>
+                </div>
+
+                <div class="signature">
+                    Handtekening medewerker <br><span class="english">Employee signature</span>
+                    <canvas id="signatureWorker"></canvas>
+                    Handtekening bedrijfsvertegenwoordiger <br><span class="english">Company representative signature</span>
+                    <canvas id="signatureCompany"></canvas>
+                </div>
+
+                <button type="button" onclick="sendEmail()">Verstuur naar Techka <br><span class="english">Send to Techka</span></button>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
+    <script>
+        // EmailJS inicializálása
+        emailjs.init("YOUR_USER_ID"); // Cseréld ki a saját User ID-dre
+
+        // Normál órák kiszámítása
+        function calculateHours(day) {
+            const start = document.querySelector(`input[name="start${day}"]`).value;
+            const end = document.querySelector(`input[name="eind${day}"]`).value;
+            const normalHoursField = document.querySelector(`input[name="normal_uren${day}"]`);
+            if (start && end && !normalHoursField.value) {
+                const startTime = new Date(`1970-01-01T${start}:00`);
+                const endTime = new Date(`1970-01-01T${end}:00`);
+                const hours = (endTime - startTime) / (1000 * 60 * 60);
+                normalHoursField.value = hours.toFixed(2);
+            }
+            calculateTotals();
+        }
+
+        // Összesítések kiszámítása
+        function calculateTotals() {
+            let totalNormalHours = 0;
+            let totalPloegenHours = 0;
+            let totalOveruren = 0;
+            let totalZiekte = 0;
+            let totalVakantie = 0;
+            let totalFeestdagen = 0;
+            let totalKm = 0;
+
+            for (let i = 1; i <= 7; i++) {
+                const normalHours = parseFloat(document.querySelector(`input[name="normal_uren${i}"]`).value) || 0;
+                const ploegenHours = parseFloat(document.querySelector(`input[name="ploegen_uren${i}"]`).value) || 0;
+                const overuren = parseFloat(document.querySelector(`input[name="overuren${i}"]`).value) || 0;
+                const ziekte = parseFloat(document.querySelector(`input[name="ziekte${i}"]`).value) || 0;
+                const vakantie = parseFloat(document.querySelector(`input[name="vakantie${i}"]`).value) || 0;
+                const feestdagen = parseFloat(document.querySelector(`input[name="feestdagen${i}"]`).value) || 0;
+                const km = parseFloat(document.querySelector(`input[name="km${i}"]`).value) || 0;
+
+                totalNormalHours += normalHours;
+                totalPloegenHours += ploegenHours;
+                totalOveruren += overuren;
+                totalZiekte += ziekte;
+                totalVakantie += vakantie;
+                totalFeestdagen += feestdagen;
+                totalKm += km;
+            }
+
+            document.getElementById('totalNormalHours').textContent = totalNormalHours.toFixed(2);
+            document.getElementById('totalNormalHoursEnglish').textContent = totalNormalHours.toFixed(2);
+            document.getElementById('totalPloegenHours').textContent = totalPloegenHours.toFixed(2);
+            document.getElementById('totalPloegenHoursEnglish').textContent = totalPloegenHours.toFixed(2);
+            document.getElementById('totalOveruren').textContent = totalOveruren.toFixed(2);
+            document.getElementById('totalOverurenEnglish').textContent = totalOveruren.toFixed(2);
+            document.getElementById('totalZiekte').textContent = totalZiekte.toFixed(2);
+            document.getElementById('totalZiekteEnglish').textContent = totalZiekte.toFixed(2);
+            document.getElementById('totalVakantie').textContent = totalVakantie.toFixed(2);
+            document.getElementById('totalVakantieEnglish').textContent = totalVakantie.toFixed(2);
+            document.getElementById('totalFeestdagen').textContent = totalFeestdagen.toFixed(2);
+            document.getElementById('totalFeestdagenEnglish').textContent = totalFeestdagen.toFixed(2);
+            document.getElementById('totalKm').textContent = totalKm.toFixed(2);
+            document.getElementById('totalKmEnglish').textContent = totalKm.toFixed(2);
+        }
+
+        // Handtekening funkcionalitás
+        function setupSignature(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            let drawing = false;
+
+            canvas.addEventListener('mousedown', () => { drawing = true; ctx.beginPath(); });
+            canvas.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('mousemove', (e) => {
+                if (drawing) {
+                    ctx.lineTo(e.offsetX, e.offsetY);
+                    ctx.stroke();
+                }
+            });
+            canvas.addEventListener('touchstart', () => { drawing = true; ctx.beginPath(); });
+            canvas.addEventListener('touchend', () => drawing = false);
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                const touch = e.touches[0];
+                const rect = canvas.getBoundingClientRect();
+                ctx.lineTo(touch.clientX - rect.left, touch.clientY - rect.top);
+                ctx.stroke();
+            });
+        }
+
+        setupSignature('signatureWorker');
+        setupSignature('signatureCompany');
+
+        // E-mail küldés
+        function sendEmail() {
+            const formData = new FormData(document.getElementById('urenForm'));
+            const data = Object.fromEntries(formData);
+            data.total_normal_hours = document.getElementById('totalNormalHours').textContent;
+            data.total_ploegen_hours = document.getElementById('totalPloegenHours').textContent;
+            data.total_overuren = document.getElementById('totalOveruren').textContent;
+            data.total_ziekte = document.getElementById('totalZiekte').textContent;
+            data.total_vakantie = document.getElementById('totalVakantie').textContent;
+            data.total_feestdagen = document.getElementById('totalFeestdagen').textContent;
+            data.total_km = document.getElementById('totalKm').textContent;
+            data.signature_worker = document.getElementById('signatureWorker').toDataURL();
+            data.signature_company = document.getElementById('signatureCompany').toDataURL();
+
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", data)
+                .then(() => alert("Verzonden naar Techka! \nSent to Techka!"))
+                .catch(() => alert("Fout bij verzenden, probeer opnieuw. \nError sending, please try again."));
+        }
+    </script>
+</body>
+</html>
