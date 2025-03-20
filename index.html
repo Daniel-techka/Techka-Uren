@@ -485,7 +485,7 @@
             data.signature_worker = document.getElementById('signatureWorker').toDataURL();
             data.signature_company = document.getElementById('signatureCompany').toDataURL();
 
-            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", data)
+            emailjs.send("service_ylflcne", "template_aakpzgt", data)
                 .then(() => alert("Verzonden naar Techka! \nSent to Techka!"))
                 .catch(() => alert("Fout bij verzenden, probeer opnieuw. \nError sending, please try again."));
         }
