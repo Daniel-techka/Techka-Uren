@@ -212,28 +212,28 @@
                 <!-- Dolgozó adatai -->
                 <div class="employee-info">
                     <label>Naam <span class="english">Name</span></label>
-                    <input type="text" name="worker_name" value="Jan de Vries" readonly>
+                    <input type="text" name="worker_name" value="">
 
                     <label>Geboortedatum <span class="english">Date of Birth</span></label>
-                    <input type="date" name="worker_dob" value="1985-03-15" readonly>
+                    <input type="date" name="worker_dob" value="">
 
                     <label>BSN-nummer <span class="english">BSN Number</span></label>
-                    <input type="text" name="worker_bsn" value="123456789" readonly>
+                    <input type="text" name="worker_bsn" value="">
                 </div>
 
                 <!-- Cég adatai -->
                 <div class="company-info">
                     <label>Bedrijfsnaam <span class="english">Company Name</span></label>
-                    <input type="text" name="company_name" value="Techka BV" readonly>
+                    <input type="text" name="company_name" value="">
 
                     <label>Adres <span class="english">Address</span></label>
-                    <input type="text" name="company_address" value="Hoofdstraat 123, 1012 AB Amsterdam" readonly>
+                    <input type="text" name="company_address" value="">
 
                     <label>Contactpersoon <span class="english">Contact Person</span></label>
-                    <input type="text" name="company_contact" value="Piet Jansen" readonly>
+                    <input type="text" name="company_contact" value="">
 
                     <label>Telefoonnummer <span class="english">Phone Number</span></label>
-                    <input type="text" name="company_phone" value="+31 20 123 4567" readonly>
+                    <input type="text" name="company_phone" value="">
                 </div>
             </div>
 
@@ -473,8 +473,11 @@
 
         // E-mail küldés
         function sendEmail() {
+            // Űrlap adatai
             const formData = new FormData(document.getElementById('urenForm'));
             const data = Object.fromEntries(formData);
+
+            // Összesítések hozzáadása
             data.total_normal_hours = document.getElementById('totalNormalHours').textContent;
             data.total_ploegen_hours = document.getElementById('totalPloegenHours').textContent;
             data.total_overuren = document.getElementById('totalOveruren').textContent;
@@ -482,12 +485,188 @@
             data.total_vakantie = document.getElementById('totalVakantie').textContent;
             data.total_feestdagen = document.getElementById('totalFeestdagen').textContent;
             data.total_km = document.getElementById('totalKm').textContent;
-            data.signature_worker = document.getElementById('signatureWorker').toDataURL();
-            data.signature_company = document.getElementById('signatureCompany').toDataURL();
 
-            emailjs.send("service_ylflcne", "template_aakpzgt", data)
+            // Aláírások base64 formátumban
+            const signatureWorker = document.getElementById('signatureWorker').toDataURL();
+            const signatureCompany = document.getElementById('signatureCompany').toDataURL();
+
+            // HTML tartalom generálása az e-mailhez
+            const formContent = document.querySelector('.form-content').cloneNode(true);
+            const infoContainer = document.querySelector('.info-container').cloneNode(true);
+            const logo = document.querySelector('.logo').outerHTML;
+            const title = document.querySelector('h1').outerHTML;
+
+            // Táblázat input mezők értékeinek frissítése (az inputok helyett a kitöltött értékek jelenjenek meg)
+            const inputs = formContent.querySelectorAll('input');
+            inputs.forEach(input => {
+                const value = input.value || '-';
+                const span = document.createElement('span');
+                span.textContent = value;
+                input.parentNode.replaceChild(span, input);
+            });
+
+            // Dolgozó és cég adatai input mezők értékeinek frissítése
+            const infoInputs = infoContainer.querySelectorAll('input');
+            infoInputs.forEach(input => {
+                const value = input.value || '-';
+                const span = document.createElement('span');
+                span.textContent = value;
+                input.parentNode.replaceChild(span, input);
+            });
+
+            // Összesítések frissítése
+            formContent.querySelector('#totalNormalHours').textContent = data.total_normal_hours;
+            formContent.querySelector('#totalNormalHoursEnglish').textContent = data.total_normal_hours;
+            formContent.querySelector('#totalPloegenHours').textContent = data.total_ploegen_hours;
+            formContent.querySelector('#totalPloegenHoursEnglish').textContent = data.total_ploegen_hours;
+            formContent.querySelector('#totalOveruren').textContent = data.total_overuren;
+            formContent.querySelector('#totalOverurenEnglish').textContent = data.total_overuren;
+            formContent.querySelector('#totalZiekte').textContent = data.total_ziekte;
+            formContent.querySelector('#totalZiekteEnglish').textContent = data.total_ziekte;
+            formContent.querySelector('#totalVakantie').textContent = data.total_vakantie;
+            formContent.querySelector('#totalVakantieEnglish').textContent = data.total_vakantie;
+            formContent.querySelector('#totalFeestdagen').textContent = data.total_feestdagen;
+            formContent.querySelector('#totalFeestdagenEnglish').textContent = data.total_feestdagen;
+            formContent.querySelector('#totalKm').textContent = data.total_km;
+            formContent.querySelector('#totalKmEnglish').textContent = data.total_km;
+
+            // Aláírások beillesztése
+            const signatureSection = formContent.querySelector('.signature');
+            signatureSection.innerHTML = `
+                <div style="margin: 30px 0;">
+                    <p>Handtekening medewerker <br><span style="font-size: 0.9em; color: #777;">Employee signature</span></p>
+                    <img src="${signatureWorker}" alt="Employee Signature" style="max-width: 400px; height: auto; border: 1px solid #E0E0E0; border-radius: 5px;">
+                    <p>Handtekening bedrijfsvertegenwoordiger <br><span style="font-size: 0.9em; color: #777;">Company representative signature</span></p>
+                    <img src="${signatureCompany}" alt="Company Representative Signature" style="max-width: 400px; height: auto; border: 1px solid #E0E0E0; border-radius: 5px;">
+                </div>
+            `;
+
+            // Gomb eltávolítása
+            formContent.querySelector('button').remove();
+
+            // Inline CSS hozzáadása az e-mailhez, hogy az e-mail kliensekben is jól nézzen ki
+            const emailStyles = `
+                <style>
+                    body {
+                        font-family: 'Roboto', sans-serif;
+                        color: #333;
+                    }
+                    .container {
+                        max-width: 1200px;
+                        margin: 0 auto;
+                        background: linear-gradient(135deg, #FFFFFF, #F0F4F8);
+                        padding: 30px;
+                        border-radius: 15px;
+                        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+                    }
+                    .logo {
+                        display: block;
+                        max-width: 300px;
+                        margin: 0 auto 20px;
+                        background-color: #FFFFFF;
+                        padding: 10px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                    }
+                    h1 {
+                        text-align: center;
+                        color: #1E90FF;
+                        margin-top: 0;
+                        margin-bottom: 30px;
+                        font-size: 28px;
+                        font-weight: 700;
+                    }
+                    .info-container {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 30px;
+                        gap: 20px;
+                    }
+                    .employee-info, .company-info {
+                        flex: 1;
+                        padding: 15px;
+                        border: 1px solid #E0E0E0;
+                        border-radius: 10px;
+                        background-color: #F9F9F9;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                    }
+                    .employee-info label, .company-info label {
+                        display: block;
+                        margin-bottom: 5px;
+                        font-weight: 500;
+                        color: #555;
+                    }
+                    .employee-info span, .company-info span {
+                        display: block;
+                        padding: 8px;
+                        margin-bottom: 10px;
+                        border: 1px solid #E0E0E0;
+                        border-radius: 5px;
+                        background-color: #FFFFFF;
+                        color: #333;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        margin-bottom: 30px;
+                    }
+                    th, td {
+                        padding: 6px;
+                        border: 1px solid #E0E0E0;
+                        text-align: center;
+                        color: #333;
+                        white-space: nowrap;
+                        font-size: 0.9em;
+                    }
+                    th {
+                        background-color: #E3F2FD;
+                        font-size: 0.85em;
+                        font-weight: 600;
+                    }
+                    tr:nth-child(even) {
+                        background-color: #F9F9F9;
+                    }
+                    .totals {
+                        margin: 30px 0;
+                        font-weight: 500;
+                        color: #333;
+                        background-color: #E3F2FD;
+                        padding: 15px;
+                        border-radius: 10px;
+                        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+                    }
+                    .english {
+                        font-size: 0.9em;
+                        color: #777;
+                        display: block;
+                        margin-top: 2px;
+                    }
+                </style>
+            `;
+
+            // Teljes HTML tartalom összeállítása
+            const emailHtml = `
+                <div style="font-family: 'Roboto', sans-serif; color: #333;">
+                    ${emailStyles}
+                    <div class="container">
+                        ${logo}
+                        ${title}
+                        ${infoContainer.outerHTML}
+                        ${formContent.outerHTML}
+                    </div>
+                </div>
+            `;
+
+            // Adatok elküldése az EmailJS-nek
+            emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+                worker_name: data.worker_name,
+                form_html: emailHtml
+            })
                 .then(() => alert("Verzonden naar Techka! \nSent to Techka!"))
-                .catch(() => alert("Fout bij verzenden, probeer opnieuw. \nError sending, please try again."));
+                .catch((error) => {
+                    console.error("EmailJS error:", error);
+                    alert("Fout bij verzenden, probeer opnieuw. \nError sending, please try again.");
+                });
         }
     </script>
 </body>
